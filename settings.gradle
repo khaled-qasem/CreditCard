@@ -1,2 +1,2 @@
-include ':app', ':creditcardlibrary'
+include ':library', ':app'
 rootProject.name='Credit Card'

@@ -3,26 +3,4 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-
-    <color name="light_blue">#59AAFF</color>
-    <color name="blue">#2C7DE3</color>
-    <color name="dark_blue">#1C6AC9</color>
-
-    <color name="light_gray">#F0F5F5</color>
-    <color name="translucent_white">#80FFFFFF</color>
-    <color name="dark_gray">#243037</color>
-
-    <string name="title_action_reset">Reset</string>
-
-    <string name="label_card_number">XXXX XXXX XXXX XXXX</string>
-    <string name="label_expired_date">MM/YY</string>
-    <string name="label_card_holder">CARD HOLDER</string>
-    <string name="label_cvv_code">CVV CODE</string>
-
-    <string name="hint_card_number">16-DIGIT CARD NUMBER</string>
-    <string name="hint_expired_date">EXPIRED DATE</string>
-    <string name="hint_card_holder">CARD HOLDER</string>
-    <string name="hint_cvv_code">CVV CODE</string>
-
-    <string name="label_secure_submission">Secure Submission</string>
 </resources>

@@ -1,16 +1,16 @@
 package com.khaled.creditcard;
 
-public class Card {
+public class CreditCard {
 
     private String cardNumber;
     private String expiredDate;
     private String cardHolder;
     private String cvvCode;
 
-    public Card() {
+    public CreditCard() {
     }
 
-    public Card(String cardNumber, String expiredDate, String cardHolder, String cvvCode) {
+    public CreditCard(String cardNumber, String expiredDate, String cardHolder, String cvvCode) {
         this.cardNumber = cardNumber;
         this.expiredDate = expiredDate;
         this.cardHolder = cardHolder;
@@ -51,10 +51,10 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card info:\r\n" +
-                "Card number = " + cardNumber + "\r\n" +
+        return "CreditCard info:\r\n" +
+                "CreditCard number = " + cardNumber + "\r\n" +
                 "Expired date = " + expiredDate + "\r\n" +
-                "Card holder = " + cardHolder + "\r\n" +
+                "CreditCard holder = " + cardHolder + "\r\n" +
                 "CVV code = " + cvvCode;
     }
 }
