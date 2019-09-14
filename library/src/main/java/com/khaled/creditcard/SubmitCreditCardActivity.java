@@ -39,21 +39,21 @@ public class SubmitCreditCardActivity extends AppCompatActivity {
     private AnimatorSet inSet;
     private AnimatorSet outSet;
     private ActivitySubmitCreditCardBinding activitySubmitCreditCardBinding;
-    private Card card;
+    private CreditCard creditCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         activitySubmitCreditCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_submit_credit_card);
-        card = new Card();
+        creditCard = new CreditCard();
 
         setSupportActionBar(activitySubmitCreditCardBinding.toolbar);
 
         View.OnClickListener onHelpClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SubmitCreditCardActivity.this, "The CVV Number (\"Card Verification Value\") is a 3 or 4 digit number on your credit and debit cards", Toast.LENGTH_LONG).show();
+                Toast.makeText(SubmitCreditCardActivity.this, "The CVV Number (\"CreditCard Verification Value\") is a 3 or 4 digit number on your credit and debit cards", Toast.LENGTH_LONG).show();
             }
         };
 
@@ -271,11 +271,11 @@ public class SubmitCreditCardActivity extends AppCompatActivity {
 
     private void submit() {
         activitySubmitCreditCardBinding.viewPager.setCurrentItem(4);
-        card.setCardNumber(activitySubmitCreditCardBinding.inputEditCardNumber.getText().toString());
-        card.setExpiredDate(activitySubmitCreditCardBinding.inputEditExpiredDate.getText().toString());
-        card.setCardHolder(activitySubmitCreditCardBinding.inputEditCardHolder.getText().toString());
-        card.setCvvCode(activitySubmitCreditCardBinding.inputEditCvvCode.getText().toString());
-        Toast.makeText(SubmitCreditCardActivity.this, card.toString(), Toast.LENGTH_LONG).show();
+        creditCard.setCardNumber(activitySubmitCreditCardBinding.inputEditCardNumber.getText().toString());
+        creditCard.setExpiredDate(activitySubmitCreditCardBinding.inputEditExpiredDate.getText().toString());
+        creditCard.setCardHolder(activitySubmitCreditCardBinding.inputEditCardHolder.getText().toString());
+        creditCard.setCvvCode(activitySubmitCreditCardBinding.inputEditCvvCode.getText().toString());
+        Toast.makeText(SubmitCreditCardActivity.this, creditCard.toString(), Toast.LENGTH_LONG).show();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -400,14 +400,14 @@ public class SubmitCreditCardActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_reset:
-                reset();
-                return true;
-            case android.R.id.home:
-                finish();
-                return true;
-        }
+//        switch (item.getItemId()) {
+//            case R.id.action_reset:
+//                reset();
+//                return true;
+//            case android.R.id.home:
+//                finish();
+//                return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
