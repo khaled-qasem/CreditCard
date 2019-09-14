@@ -7,11 +7,11 @@ import androidx.databinding.DataBindingUtil
 import com.khaled.app.databinding.ActivityMainBinding
 import com.khaled.creditcard.CreditCard
 import com.khaled.creditcard.CreditCardFragment
-import com.khaled.creditcard.CreditCardSubmitListener
+import com.khaled.creditcard.OnCreditCardSubmitListener
 import com.khaled.creditcard.OnCardNumberFilledListener
 
-class MainActivity : AppCompatActivity(), CreditCardSubmitListener, OnCardNumberFilledListener {
-    override fun onCardNumberFilledListener(cardNumber: String?) {
+class MainActivity : AppCompatActivity(), OnCreditCardSubmitListener, OnCardNumberFilledListener {
+    override fun onCardNumberFilled(cardNumber: String?) {
         Log.d(MainActivity::class.java.simpleName, cardNumber)
     }
 
@@ -20,8 +20,8 @@ class MainActivity : AppCompatActivity(), CreditCardSubmitListener, OnCardNumber
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        creditCardFragment.registerCreditCardSubmitListener(this)
-        creditCardFragment.registerOnCreditCardFilledListener(this)
+        creditCardFragment.registerOnCreditCardSubmitListener(this)
+        creditCardFragment.registerOnCardNumberFilledListener(this)
         addFragment()
 
         binding.get.setOnClickListener {
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), CreditCardSubmitListener, OnCardNumber
 
     override fun onDestroy() {
         super.onDestroy()
-        creditCardFragment.unRegisterCreditCardSubmitListener(this)
-        creditCardFragment.unRegisterOnCreditCardFilledListener(this)
+        creditCardFragment.unRegisterOnCreditCardSubmitListener(this)
+        creditCardFragment.unRegisterOnCardNumberFilledListener(this)
     }
 }

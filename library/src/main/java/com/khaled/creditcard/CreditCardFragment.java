@@ -43,7 +43,7 @@ public class CreditCardFragment extends Fragment {
     private AnimatorSet inSet;
     private AnimatorSet outSet;
     private CreditCard creditCard;
-    private List<CreditCardSubmitListener> creditCardSubmitListeners = new ArrayList<>();
+    private List<OnCreditCardSubmitListener> onCreditCardSubmitListeners = new ArrayList<>();
     private List<OnCardNumberFilledListener> onCardNumberFilledListeners = new ArrayList<>();
 
     @Override
@@ -78,19 +78,19 @@ public class CreditCardFragment extends Fragment {
         return creditCard;
     }
 
-    public void registerCreditCardSubmitListener(CreditCardSubmitListener creditCardSubmitListener) {
-        creditCardSubmitListeners.add(creditCardSubmitListener);
+    public void registerOnCreditCardSubmitListener(OnCreditCardSubmitListener onCreditCardSubmitListener) {
+        onCreditCardSubmitListeners.add(onCreditCardSubmitListener);
     }
 
-    public void unRegisterCreditCardSubmitListener(CreditCardSubmitListener creditCardSubmitListener) {
-        creditCardSubmitListeners.remove(creditCardSubmitListener);
+    public void unRegisterOnCreditCardSubmitListener(OnCreditCardSubmitListener onCreditCardSubmitListener) {
+        onCreditCardSubmitListeners.remove(onCreditCardSubmitListener);
     }
 
-    public void registerOnCreditCardFilledListener(OnCardNumberFilledListener onCardNumberFilledListener) {
+    public void registerOnCardNumberFilledListener(OnCardNumberFilledListener onCardNumberFilledListener) {
         onCardNumberFilledListeners.add(onCardNumberFilledListener);
     }
 
-    public void unRegisterOnCreditCardFilledListener(OnCardNumberFilledListener onCardNumberFilledListener) {
+    public void unRegisterOnCardNumberFilledListener(OnCardNumberFilledListener onCardNumberFilledListener) {
         onCardNumberFilledListeners.remove(onCardNumberFilledListener);
     }
 
@@ -388,16 +388,16 @@ public class CreditCardFragment extends Fragment {
     }
 
     private void notifyCreditCardListeners() {
-        for (CreditCardSubmitListener creditCardSubmitListener :
-                creditCardSubmitListeners) {
-            creditCardSubmitListener.onSubmit(creditCard);
+        for (OnCreditCardSubmitListener onCreditCardSubmitListener :
+                onCreditCardSubmitListeners) {
+            onCreditCardSubmitListener.onSubmit(creditCard);
         }
     }
 
     private void notifyCardNumberFilledListeners(String cardNumber) {
         for (OnCardNumberFilledListener onCardNumberFilledListener :
                 onCardNumberFilledListeners) {
-            onCardNumberFilledListener.onCardNumberFilledListener(cardNumber);
+            onCardNumberFilledListener.onCardNumberFilled(cardNumber);
         }
     }
 

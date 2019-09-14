@@ -1,6 +1,6 @@
 package com.khaled.creditcard;
 
-public interface CreditCardSubmitListener {
+public interface OnCreditCardSubmitListener {
 
     void onSubmit(CreditCard creditCard);
 }
