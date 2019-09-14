@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Credit Card</string>
     <string name="cvv_help">The CVV Number ("CreditCard Verification Value") is a 3 or 4 digit number on your credit and debit cards</string>
@@ -14,8 +15,8 @@
     <string name="hint_cvv_code">CVV CODE</string>
 
     <string name="label_secure_submission">Secure Submission</string>
-    <string name="invalid_credit_card_number">Invalid card number</string>
-    <string name="invalid_moth">Invalid EXP month</string>
+    <string name="invalid_credit_card_number">رقم البطاقة غير صحيح</string>
+    <string name="invalid_moth">شهر الانتهاء غير صحيح</string>
     <string name="zero">0</string>
 
 </resources>

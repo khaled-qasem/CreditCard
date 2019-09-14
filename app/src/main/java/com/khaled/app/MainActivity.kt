@@ -8,15 +8,20 @@ import com.khaled.app.databinding.ActivityMainBinding
 import com.khaled.creditcard.CreditCard
 import com.khaled.creditcard.CreditCardFragment
 import com.khaled.creditcard.CreditCardSubmitListener
+import com.khaled.creditcard.OnCardNumberFilledListener
 
-class MainActivity : AppCompatActivity(), CreditCardSubmitListener {
+class MainActivity : AppCompatActivity(), CreditCardSubmitListener, OnCardNumberFilledListener {
+    override fun onCardNumberFilledListener(cardNumber: String?) {
+        Log.d(MainActivity::class.java.simpleName, cardNumber)
+    }
 
     private lateinit var binding: ActivityMainBinding
     private val creditCardFragment: CreditCardFragment = CreditCardFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        creditCardFragment.registerCreditCardSubmiListener(this)
+        creditCardFragment.registerCreditCardSubmitListener(this)
+        creditCardFragment.registerOnCreditCardFilledListener(this)
         addFragment()
 
         binding.get.setOnClickListener {
@@ -39,6 +44,7 @@ class MainActivity : AppCompatActivity(), CreditCardSubmitListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        creditCardFragment.unRegisterCreditCardSubmiListener(this)
+        creditCardFragment.unRegisterCreditCardSubmitListener(this)
+        creditCardFragment.unRegisterOnCreditCardFilledListener(this)
     }
 }

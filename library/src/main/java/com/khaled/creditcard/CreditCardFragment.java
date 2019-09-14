@@ -44,6 +44,7 @@ public class CreditCardFragment extends Fragment {
     private AnimatorSet outSet;
     private CreditCard creditCard;
     private List<CreditCardSubmitListener> creditCardSubmitListeners = new ArrayList<>();
+    private List<OnCardNumberFilledListener> onCardNumberFilledListeners = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,19 +78,27 @@ public class CreditCardFragment extends Fragment {
         return creditCard;
     }
 
-    public void registerCreditCardSubmiListener(CreditCardSubmitListener creditCardSubmitListener) {
+    public void registerCreditCardSubmitListener(CreditCardSubmitListener creditCardSubmitListener) {
         creditCardSubmitListeners.add(creditCardSubmitListener);
     }
 
-    public void unRegisterCreditCardSubmiListener(CreditCardSubmitListener creditCardSubmitListener) {
+    public void unRegisterCreditCardSubmitListener(CreditCardSubmitListener creditCardSubmitListener) {
         creditCardSubmitListeners.remove(creditCardSubmitListener);
+    }
+
+    public void registerOnCreditCardFilledListener(OnCardNumberFilledListener onCardNumberFilledListener) {
+        onCardNumberFilledListeners.add(onCardNumberFilledListener);
+    }
+
+    public void unRegisterOnCreditCardFilledListener(OnCardNumberFilledListener onCardNumberFilledListener) {
+        onCardNumberFilledListeners.remove(onCardNumberFilledListener);
     }
 
     private void initViews() {
         View.OnClickListener onHelpClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(requireContext(), "The CVV Number (\"CreditCard Verification Value\") is a 3 or 4 digit number on your credit and debit cards", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), getString(R.string.cvv_help), Toast.LENGTH_LONG).show();
             }
         };
 
@@ -113,20 +122,26 @@ public class CreditCardFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (lock || s.length() > 16) {
+                if (lock || s.length() > 19) {
                     return;
                 }
                 lock = true;
+
                 for (int i = 4; i < s.length(); i += 5) {
                     if (s.toString().charAt(i) != ' ') {
                         s.insert(i, " ");
                     }
                 }
+                if (s.toString().isEmpty()) {
+                    mBinding.textCardNumber.setText(getString(R.string.label_card_number));
+                } else {
+                    mBinding.textCardNumber.setText(s);
+                }
                 lock = false;
             }
         });
 
-        mBinding.textExpiredDate.addTextChangedListener(new TextWatcher() {
+        mBinding.inputEditExpiredDate.addTextChangedListener(new TextWatcher() {
 
             private boolean lock;
 
@@ -141,12 +156,20 @@ public class CreditCardFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (lock || s.length() > 4) {
+                if (lock || s.length() > 5) {
                     return;
                 }
                 lock = true;
                 if (s.length() > 2 && s.toString().charAt(2) != '/') {
                     s.insert(2, "/");
+                }
+                if (!s.toString().isEmpty() && (Integer.parseInt(String.valueOf(s.toString().charAt(0))) > 2)) {
+                    s.insert(0, getString(R.string.zero));
+                }
+                if (s.toString().isEmpty()) {
+                    mBinding.textExpiredDate.setText(getString(R.string.label_expired_date));
+                } else {
+                    mBinding.textExpiredDate.setText(s);
                 }
                 lock = false;
             }
@@ -234,15 +257,55 @@ public class CreditCardFragment extends Fragment {
             }
         };
 
-        mBinding.inputEditCardNumber.setOnEditorActionListener(onEditorActionListener);
-        mBinding.inputEditExpiredDate.setOnEditorActionListener(onEditorActionListener);
+        handleCardNumberActionListener();
+        handleExpiredDateActionListener();
         mBinding.inputEditCardHolder.setOnEditorActionListener(onEditorActionListener);
         mBinding.inputEditCvvCode.setOnEditorActionListener(onEditorActionListener);
-
         mBinding.inputEditCardNumber.requestFocus();
 
         inSet = (AnimatorSet) AnimatorInflater.loadAnimator(requireContext(), R.animator.card_flip_in);
         outSet = (AnimatorSet) AnimatorInflater.loadAnimator(requireContext(), R.animator.card_flip_out);
+    }
+
+    private void handleExpiredDateActionListener() {
+        TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                String expDate = mBinding.textExpiredDate.getText().toString();
+                if (!Utils.isValidExpDate(expDate)) {
+                    Toast.makeText(requireContext(), R.string.invalid_credit_card_number, Toast.LENGTH_LONG).show();
+                } else {
+                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                        mBinding.viewPager.setCurrentItem(mBinding.viewPager.getCurrentItem() + 1);
+                        handled = true;
+                    }
+                }
+                return handled;
+            }
+        };
+        mBinding.inputEditExpiredDate.setOnEditorActionListener(onEditorActionListener);
+    }
+
+    private void handleCardNumberActionListener() {
+        TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                String creditCardNumber = mBinding.textCardNumber.getText().toString();
+                if (creditCardNumber.length() < 13 || creditCardNumber.length() > 19 || !Utils.isValidCreditCardNumber(creditCardNumber)) {
+                    Toast.makeText(requireContext(), R.string.invalid_credit_card_number, Toast.LENGTH_LONG).show();
+                } else {
+                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                        notifyCardNumberFilledListeners(creditCardNumber);
+                        mBinding.viewPager.setCurrentItem(mBinding.viewPager.getCurrentItem() + 1);
+                        handled = true;
+                    }
+                }
+                return handled;
+            }
+        };
+        mBinding.inputEditCardNumber.setOnEditorActionListener(onEditorActionListener);
     }
 
 
@@ -308,10 +371,10 @@ public class CreditCardFragment extends Fragment {
 
     private void submit() {
         mBinding.viewPager.setCurrentItem(4);
-        creditCard.setCardNumber(mBinding.inputEditCardNumber.getText().toString());
-        creditCard.setExpiredDate(mBinding.inputEditExpiredDate.getText().toString());
-        creditCard.setCardHolder(mBinding.inputEditCardHolder.getText().toString());
-        creditCard.setCvvCode(mBinding.inputEditCvvCode.getText().toString());
+        creditCard.setCardNumber(mBinding.textCardNumber.getText().toString());
+        creditCard.setExpiredDate(mBinding.textExpiredDate.getText().toString());
+        creditCard.setCardHolder(mBinding.textCardHolder.getText().toString());
+        creditCard.setCvvCode(mBinding.textCvvCode.getText().toString());
         notifyCreditCardListeners();
 
         new Handler().postDelayed(new Runnable() {
@@ -328,6 +391,13 @@ public class CreditCardFragment extends Fragment {
         for (CreditCardSubmitListener creditCardSubmitListener :
                 creditCardSubmitListeners) {
             creditCardSubmitListener.onSubmit(creditCard);
+        }
+    }
+
+    private void notifyCardNumberFilledListeners(String cardNumber) {
+        for (OnCardNumberFilledListener onCardNumberFilledListener :
+                onCardNumberFilledListeners) {
+            onCardNumberFilledListener.onCardNumberFilledListener(cardNumber);
         }
     }
 
