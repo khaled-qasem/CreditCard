@@ -186,7 +186,7 @@ public class CreditCardFragment extends Fragment {
         mBinding.viewPager.setClipToPadding(false);
         mBinding.viewPager.setPadding(width / 4, 0, width / 4, 0);
         mBinding.viewPager.setPageMargin(width / 14);
-        mBinding.viewPager.setPagingEnabled(false);
+        mBinding.viewPager.setPagingEnabled(true);
         mBinding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -486,6 +486,4 @@ public class CreditCardFragment extends Fragment {
         float dp = px / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return dp;
     }
-
-
 }
