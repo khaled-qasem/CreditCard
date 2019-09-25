@@ -1,5 +1,7 @@
 package com.khaled.creditcard;
 
+import android.util.Log;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,11 +24,24 @@ class Utils {
     }
 
     static Boolean isValidExpDate(String expDate) {
-        if (expDate.length() > 5) {
+        if (expDate.isEmpty() || expDate.equalsIgnoreCase("MM/YY")) {
             return false;
-        } else {
+        } else if (expDate.length() > 5) {
+            return false;
+        } else if (expDate.length() > 2 && expDate.contains("/")) {
             String[] dates = expDate.split("/");
-            return Integer.valueOf(dates[0]) <= 12;
+            if (dates.length >= 1) {
+                try {
+                    return Integer.valueOf(dates[0]) <= 12;
+                } catch (NumberFormatException e) {
+                    Log.e(Utils.class.getName(), e.getMessage(), e);
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }
