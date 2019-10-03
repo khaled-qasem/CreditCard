@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -260,6 +261,43 @@ public class CreditCardFragment extends Fragment {
 
         inSet = (AnimatorSet) AnimatorInflater.loadAnimator(requireContext(), R.animator.card_flip_in);
         outSet = (AnimatorSet) AnimatorInflater.loadAnimator(requireContext(), R.animator.card_flip_out);
+
+
+        setClickListenersForCardTexts();
+    }
+
+    private void setClickListenersForCardTexts() {
+        mBinding.textCardNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBinding.viewPager.setCurrentItem(0);
+                mBinding.inputEditCardNumber.requestFocus();
+            }
+        });
+
+        mBinding.textExpiredDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBinding.viewPager.setCurrentItem(1);
+                mBinding.inputEditExpiredDate.requestFocus();
+            }
+        });
+
+        mBinding.textCardHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBinding.viewPager.setCurrentItem(2);
+                mBinding.inputEditCardHolder.requestFocus();
+            }
+        });
+
+        mBinding.textCvvCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBinding.viewPager.setCurrentItem(3);
+                mBinding.inputEditCvvCode.requestFocus();
+            }
+        });
     }
 
     private void handleExpiredDateActionListener() {
