@@ -127,15 +127,10 @@ public class CreditCardFragment extends Fragment {
                 }
                 lock = true;
 
-                for (int i = 4; i < s.length(); i += 5) {
-                    if (s.toString().charAt(i) != ' ') {
-                        s.insert(i, " ");
-                    }
-                }
                 if (s.toString().isEmpty()) {
                     mBinding.textCardNumber.setText(getString(R.string.label_card_number));
                 } else {
-                    mBinding.textCardNumber.setText(s);
+                    mBinding.textCardNumber.setText(getSpacedNumber(s.toString()));
                 }
                 lock = false;
             }
@@ -160,7 +155,7 @@ public class CreditCardFragment extends Fragment {
                     return;
                 }
                 lock = true;
-                if (s.length() > 2 && s.toString().charAt(2) != '/') {
+                if (s.length() > 2 && s.toString().charAt(2) != '/' && !s.toString().contains("/")) {
                     s.insert(2, "/");
                 }
                 if (!s.toString().isEmpty() && (Integer.parseInt(String.valueOf(s.toString().charAt(0))) > 2)) {
@@ -293,7 +288,7 @@ public class CreditCardFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 String creditCardNumber = mBinding.textCardNumber.getText().toString();
-                if (creditCardNumber.length() < 13 || creditCardNumber.length() > 19 || !Utils.isValidCreditCardNumber(creditCardNumber)) {
+                if (creditCardNumber.length() < 13 || creditCardNumber.length() > 19 || !CardValidator.validateCardNumber(creditCardNumber)) {
                     Toast.makeText(requireContext(), R.string.invalid_credit_card_number, Toast.LENGTH_LONG).show();
                 } else {
                     if (actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -327,10 +322,6 @@ public class CreditCardFragment extends Fragment {
                 case 3:
                     resId = R.id.input_layout_cvv_code;
                     break;
-                case 4:
-                    resId = R.id.space;
-                    break;
-
             }
             return requireActivity().findViewById(resId);
         }
@@ -343,7 +334,7 @@ public class CreditCardFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
 
         @Override
@@ -380,7 +371,7 @@ public class CreditCardFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mBinding.inputLayoutCvvCode.setVisibility(View.INVISIBLE);
+                mBinding.inputLayoutCvvCode.setVisibility(View.VISIBLE);
                 requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
                 hideKeyboard(mBinding.inputEditCvvCode);
             }
@@ -485,5 +476,15 @@ public class CreditCardFragment extends Fragment {
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = px / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return dp;
+    }
+
+    private String getSpacedNumber(String card) {
+        StringBuilder str = new StringBuilder(card.replaceAll(" ", ""));
+        for (int i = 4; i < str.length(); i += 5) {
+            if (str.toString().charAt(i) != ' ') {
+                str.insert(i, " ");
+            }
+        }
+        return str.toString();
     }
 }
